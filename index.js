@@ -1,10 +1,3 @@
-const express=require('express')
-const mongoose=require('mongoose')
-const bodyParser=require('body-parser');
-const {Expense,UserDetail} = require('./schema.js')
-const app=express()
-app.use(bodyParser.json())
-
 // Connection
 
 //  async function connecttodb(){
@@ -48,7 +41,26 @@ app.use(bodyParser.json())
  *              - emailId
  *              - password
  */
+const express=require('express')
+const mongoose=require('mongoose')
+const bodyParser=require('body-parser');
+const jwt=require('jsonwebtoken')
+// const {Expense,UserDetail} = require('./schema.js')
+const app=express()
+app.use(bodyParser.json())
 
+const expenserout=require('./routes/Expenseroute.js')
+const userroute=require('./routes/Userroute.js')
+
+app.use('/expense',expenserout)
+app.use('/user',userroute)
+
+const secretKey = '1njn4t5jj4b36un5474nmvoin35h245nio4io5niy7n425ignvion'
+function generateToken(userDetails) {
+    return jwt.sign(userDetails, secretKey)
+}
+
+// app.use(authenticatedToken)
 async function ConnectionToDb(){
     try{
         await mongoose.connect('mongodb+srv://prathish0071:prathish2004@cluster0.iq2tnz2.mongodb.net/ExpenseTracker?retryWrites=true&w=majority&appName=Cluster0')
@@ -69,24 +81,7 @@ ConnectionToDb()
 // })
 
 
-app.post('/addExpense', async(req,res)=>{//get detail from user and store it so we use POST method
-   console.log("ghjk")
-    try{
-     await Expense.create({
-           "amount":req.body.amount,
-           "category":req.body.category,
-           "date":req.body.date
-       })
-       res.status(200).json({
-        "status":"true",
-        "message":"Entry success"
-       })
 
-   } catch(error){
-    res.json({
-        "status":"failure",
-        "MEssage":"entry not created",
-        "error":error
-    })
-   }
-})
+
+
+
